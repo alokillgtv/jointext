@@ -1,1 +1,3 @@
 # jointext
+Source Code by Matran999, edit by alokillGTV.
+Add Tool Split Phrase text and more...
