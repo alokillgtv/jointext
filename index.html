@@ -160,15 +160,41 @@
 				<p>Công cụ tách các cụm từ</p>
 			</div>
 			<div class="tool-split-char">
-				<input type="text" class="charRegexpSplit" placeholder="Nhập các cụm từ cần tách, có thể dùng regexp" />
-				<input type="text" class="charRegexpJoin" placeholder="Nhập các ký tự tạm thay thế" />
+				<div class="wrap-btn-text-input">
+					<label>Thuật Toán Regexp</label>
+					<input type="text" class="charRegexpSplit" placeholder="Nhập các cụm từ cần tách, có thể dùng regexp" />
+				</div>
+				<div class="wrap-btn-text-input split-text-input">
+					<label>Từ Thay Thế Khi Tách Ra</label>
+					<input type="text" class="charRegexpJoin" placeholder="Nhập các ký tự tạm thay thế" />
+				</div>
 				<button class="submit-split" onclick="submitSplit()">Tách Cụm Từ</button>
 				<button class="submit-join" onclick="submitJoin()">Gộp Cụm Từ</button>
-				<button class="submit-replace" onclick="submitReplace()">Replace Cụm Từ</button>
+				<button class="submit-replace" onclick="submitReplaceCheck()">Replace Cụm Từ</button>
+				<button class="submit-erase" onclick="eraseForm()">Xóa Trống</button>
+				<div class="wrap-btn-upload-char formleft">
+					<label>Upload File Nguồn</label>
+					<input title="Dùng để upload file nguồn nếu text của bạn quá nặng.&#10&#10Chỉ hỗ trợ những file thuần text như txt, csv, srt " type="file" id="fileUploadXML" onchange="formLeft(this)" accept="text/plain,.csv,.srt,.xml" multiple/>
+				</div>
+				<div class="wrap-btn-upload-char formright">
+					<label>Upload File Replace</label>
+					<input title="Dùng để upload file replace nếu text replace của bạn quá nặng.&#10&#10Chỉ hỗ trợ những file thuần text như txt, csv, srt " type="file" id="fileUploadTEXT" onchange="formRight(this)" accept="text/plain,.csv,.srt"/>
+				</div>
+				<div class="option-button-change active" title="Tùy chọn khi upload file lên, text sẽ được chuyển vào khung text.&#10;&#10;Hoặc nó sẽ được lưu vào bộ nhớ để xử lý và khi kết thúc thì được tải tập tin về.">
+					<button class="option-btn-char option-form" onclick="optionForm()">Chèn Vào Form</button><button class="option-btn-char option-download" onclick="optionDownload()">Tải File Về</button>
+				</div>
+				
 			</div>
 			<div class="input-page">
-				<textarea placeholder="Nhập đoạn text bạn cần mã hóa ký tự vào đây." class="char-result-text"></textarea>
-				<textarea placeholder="Nhập đoạn text bạn cần mã hóa ký tự vào đây." class="char-result-char"></textarea>
+				<div class="wrap-area-form">
+					<button class="copyform" onclick="copyAll(this)">COPY ALL</button>
+					<textarea placeholder="&#10;&#10;Nhập các đoạn text nguồn vào.&#10;&#10;Những đoạn text này sẽ được tách và thay thế bằng các ký tự tùy theo lựa chọn của bạn." class="char-result-text"></textarea>
+				</div>
+				<div class="wrap-area-form">
+					<button class="copyform" onclick="copyAll(this)">COPY ALL</button>
+					<button class="copyform daocumtu" onclick="DAOCUMTU(this)">ĐẢO CỤM TỪ</button>
+					<textarea placeholder="&#10;&#10;Khung này là nơi để tách các cụm từ bằng các thuật toán Regexp hoặc Replace các cụm từ qua lại.&#10;&#10;VD Replace: Text Nguồn	Text Replace.&#10;&#10;Mỗi cụm từ tách biệt bằng một dấu tab. Cái này các bạn copy từ 2 cột bên Excel qua là có tab liền.&#10;&#10;Các bạn nên soạn cụm từ ở file Excel sẽ dễ thực hiện hơn.&#10;Các ví dụ cụm từ như bên dưới: Yume sẽ được thay thế bằng #N2373Z#&#10;&#10;&#10;Yume	 #N2373Z# &#10;Monk	 #N2374Z# &#10;Wolf	 #N2375Z# &#10;Heal	 #N2376Z# &#10;Slow	 #N2377Z# &#10;Hook	 #N2378Z# 	" class="char-result-char"></textarea>
+				</div>
 			</div>	
 		</div>
 	

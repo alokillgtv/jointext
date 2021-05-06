@@ -14,14 +14,15 @@ $FileSplit = "";
 $NameFileSplit = "";
 $NumberFileSplit = 0;
 $UploadType = true;
-
+/*
 var $regSave = localStorage.getItem("regKey");
 if($regSave != null){
-	var $vreg = $regSave.split("*tach*")[0];
-	var $trep = $regSave.split("*tach*")[1];
-	$('.charRegexpSplit').val($vreg);
-	$('.charRegexpJoin').val($trep);
+	//var $vreg = $regSave.split("*tach*")[0];
+	//var $trep = $regSave.split("*tach*")[1];
+	//$('.charRegexpSplit').val($vreg);
+	//$('.charRegexpJoin').val($trep);
 }
+*/
 
 $('input[name="upload-type-file"]').change(function() {
   if (this.value == "file") {
@@ -245,7 +246,13 @@ function convertText($textdata, $name, $number, $mutiFile) {
       $limitFile = $maxFile + $limitFile;
       $NameFileJoin = "File_Join_" + $NumberJoin + ".txt";
       $NumberJoin = $NumberJoin + 1;
-			$ZipDownload.file($NameFileJoin, $FileJoin);
+	  $ZipDownload.file($NameFileJoin, $FileJoin);
+	  /*
+	  var blob = new Blob([$FileJoin], {
+			type: "text/plain;charset=utf-8;",
+	  });
+	  saveAs(blob, $NameFileJoin);	
+	  */
       $FileJoin = "";
       $ListFile += '<li class="item-file" onclick="collect.call(this)" title="Nhấn để thu gọn lại.">';
       $ListFile += '<label class="file-item">' + $NameFileJoin + '</label>';
@@ -286,7 +293,13 @@ function convertText($textdata, $name, $number, $mutiFile) {
     $ListFile = '<li class="item-file" onclick="collect.call(this)" title="Nhấn để thu gọn lại."><label class="file-item">' + $name + '</label></li>';
     $('.list-file').append($ListFile);
     if (($number + 1) == $mutiFile.length) {
-      $ZipDownload.file($name.replace(/\_\d+\.txt/,".txt"), $FileJoin);
+		$ZipDownload.file($name.replace(/\_\d+\.txt/,".txt"), $FileJoin);
+		/*
+	  	var blob = new Blob([$FileJoin], {
+			type: "text/plain;charset=utf-8;",
+		});
+		saveAs(blob, $name.replace(/\_\d+\.txt/,".txt"));	
+		*/
       compleJoin();
       return false;
     }
@@ -302,14 +315,25 @@ function compleJoin() {
   $('.complete-gif').show();
   document.getElementById('fileJoin').value = "";
   setTimeout(function() {
-    $ZipDownload.generateAsync({
-      type: "blob"
-    }).then(function(content) {
-      saveAs(content, "All File Join.zip");
-    });
-    $('.loading-run').removeClass("active");
-  }, 2000);
+	  if($NumberJoin == 1){
+		var blob = new Blob([$FileJoin], {
+			type: "text/plain;charset=utf-8;",
+		});
+		saveAs(blob, "All Text Join.txt");	
+		$('.loading-run').removeClass("active");
+	  }
+	  else{
+		//*  
+		$ZipDownload.generateAsync({
+		  type: "blob"
+		}).then(function(content) {
+		  saveAs(content, "All File Join.zip");
+		});
+		$('.loading-run').removeClass("active");
 
+	  //*/
+	  }
+  }, 2000);
 }
 
 function submitSplit(){
@@ -347,7 +371,7 @@ function submitSplit(){
 		$('.char-result-text').val($result);
 		$('.char-result-char').val($allCum);
 		var $regKey = $vreg + "*tach*" + $trep;
-		var $regSave = localStorage.setItem("regKey", $regKey);
+		//var $regSave = localStorage.setItem("regKey", $regKey);
 		$('textarea.char-result-text, textarea.char-result-char').css("background","cornsilk");
 		setTimeout(function(){
 			$('textarea.char-result-text, textarea.char-result-char').css("background","white");		
@@ -406,18 +430,161 @@ function submitJoin(){
 	}
 };
 
+$upCASE = false;
+
+function RunReplace(){
+	console.log("Run replace file");
+	if($saveTextDownload){
+		if(!$saveTextReplace){
+			alert("Vui lòng upload file text replace cụm từ.");
+			return false;
+		}
+		var $max = $saveTextDownload.length;
+		for($k = 0;$k < $max;$k++){
+			var $cumReplace = $saveTextReplace;
+			$lineCum = $cumReplace.split("\n");
+			var $TextAll = $saveTextDownload[$k].text;
+			$packCum = new Object();
+			for(var $j = 0;$j < $lineCum.length;$j++){
+				var $block = $lineCum[$j];
+				var $split = $block.split("\t");
+				if($block.match(/\t/)){
+					if($upCASE == true){
+						var $in = $split[0];
+					}
+					else{
+						var $in = $split[0].toLowerCase();
+					}
+					//console.log("$in: " + $in)
+					var $out = $split[1];
+					//console.log("$out: " + $out)
+					$packCum[$in] = $out;
+				}
+			}
+			console.log("Đang thực thi " + ($k + 1) + " / "+ $max +" files");
+			var $resultReplace = CumTuReplace($TextAll,$packCum);
+			$saveTextDownload[$k].text = $resultReplace;
+		}
+		SaveFileText($saveTextDownload);
+		console.log("Đã replace xong text lưu trong biến tải về");
+	}
+	else{
+		alert("Vui lòng upload file text nguồn")
+	}
+}
+
+function SaveFileText($OBJFile){
+	var $maxFiles = $OBJFile.length;
+	if($maxFiles == 1){
+		var blob = new Blob([$OBJFile[0].text], {
+			type: "text/plain;charset=utf-8;",
+		});
+		saveAs(blob, $OBJFile[0].name);	
+	}
+	else{
+		var $ZipTEXT = new JSZip();
+		for(var $h = 0;$h < $maxFiles;$h++){
+			var $file = $OBJFile[$h];
+			$ZipTEXT.file($file.name, $file.text);
+		}
+		$ZipTEXT.generateAsync({
+		  type: "blob"
+		}).then(function(content) {
+		  saveAs(content, "All File Replace.zip");
+		});
+	}
+}
+
+function submitReplaceCheck(){
+	try{
+		submitReplace();
+	}
+	catch(e){
+		console.log(e);
+		alert("Dung lượng file quá lớn... Không thể thực thi được.")
+	}
+}
+
+function DAOCUMTU(e){
+	if($optionSave == true){
+		//$upCASE = false;
+		var $cumReplace = $('.char-result-char').val();
+		var $newText = chuyendoi($cumReplace);
+		$('.char-result-char').val($newText);
+		console.log("Chuyển khi cụm replace là ở khung.")
+	}
+	else{
+		//$upCASE = true;
+		var $cumReplace = $saveTextReplace;
+		var $newText = chuyendoi($cumReplace);
+		$saveTextReplace = $newText;
+		$('.char-result-char').val($newText);
+		console.log("Chuyển khi cụm replace đã upload.")
+	}
+}
+
+function chuyendoi($cumReplace){
+	var $newReturn = "";
+	var $lineCum = $cumReplace.split("\r\n");
+	if($lineCum){
+		if($lineCum.length == 1){
+			var $lineCum = $cumReplace.split("\n");
+		}
+	}
+	for(var $j = 0;$j < $lineCum.length;$j++){
+		var $block = $lineCum[$j];
+		var $split = $block.split("\t");
+		if($block.match(/\t/)){
+			if($upCASE == false){
+				$line = $split[1]+"\t"+$split[0];
+			}
+			else{
+				$line = $split[0]+"\t"+$split[1];
+			}
+			$newReturn += $line + "\r\n";
+		}
+	}
+	if($upCASE == false){
+		$upCASE = true;
+		$('.copyform.daocumtu').removeClass("active");
+		$('.copyform.daocumtu').addClass("active");
+	}
+	else{
+		$upCASE = false
+		$('.copyform.daocumtu').removeClass("active");
+	}
+	console.log($upCASE);
+	return $newReturn;
+}
+
 
 function submitReplace(){
-	var $cumReplace = $('.char-result-char').val();	// Replace Text
+	if($optionSave == true){
+		var $cumReplace = $('.char-result-char').val();	// Replace Text
 	//console.log("$cumReplace" + $cumReplace)
-	$lineCum = $cumReplace.split("\n");
-	var $TextAll = $('.char-result-text').val();
+		$lineCum = $cumReplace.split("\n");
+	if($lineCum){
+		if($lineCum.length == 1){
+			var $lineCum = $cumReplace.split("\n");
+		}
+	}
+		var $TextAll = $('.char-result-text').val();
+	}
+	else{
+		RunReplace();
+		return false;
+	}
 	$packCum = new Object();
 	for(var $j = 0;$j < $lineCum.length;$j++){
 		var $block = $lineCum[$j];
 		var $split = $block.split("\t");
 		if($block.match(/\t/)){
-			var $in = $split[0];
+			if($upCASE == true){
+				var $in = $split[0];
+			}
+			else{
+				var $in = $split[0].toLowerCase();
+			}
 			//console.log("$in: " + $in)
 			var $out = $split[1];
 			//console.log("$out: " + $out)
@@ -432,18 +599,145 @@ function submitReplace(){
 	},5000)
 }
 
+RegExp.quote = function(str) {
+     return str.replace(/([.?*+^$[\]\\(){}-])/g, "\\$1");
+};
+
 function CumTuReplace(str, map){
 	$object = map;
 	//var matchStr = Object.keys(map).join('\\b|\\b');
-	var matchStr = Object.keys(map).join('|');
+	//var matchStr = Object.keys(map).join('|');
+	var matchStr = Object.keys($packCum).join('|');
+	//matchStr = "" + matchStr + ""
+	matchStr = RegExp.quote(matchStr);
+	matchStr = matchStr.replace(/\|/g,"\\b|\\b").replace(/\\b</gi,"<").replace(/>\\b/gi,">").replace(/(\\)/gi,"\$1");
+	//console.log(matchStr)
 	if (!matchStr){
 		return str;
 	}
-	//var regexp = new RegExp("\\b" + matchStr + "\\b", 'g');
-	var regexp = new RegExp(matchStr, 'g');
+	//var regexp = new RegExp(matchStr, 'gi');
+	if($upCASE == true){
+		matchStr = matchStr.replace(/\\b/gi,"");
+		var regexp = new RegExp(matchStr, 'gi');
+	}
+	else{
+		var regexp = new RegExp("\\b" + matchStr + "\\b", 'gi');		
+	}
 	console.log(regexp)
 	var $text = str.replace(regexp, function(match){
-		return map[match]
+		if($upCASE == true){
+			var $lowCas = match;
+		}
+		else{
+			var $lowCas = match.toLowerCase();
+		}
+		if(map[$lowCas]){
+			//console.log($lowCas + " = " + map[$lowCas]);
+			//console.log($lowCas);
+			return map[$lowCas]
+		}
+		else{
+			console.log($lowCas + " = " + map[$lowCas]);
+			return match
+		}
 	});
 	return $text
+}
+
+$optionSave = true;
+$saveTextDownload = new Array();
+$saveTextReplace = false;
+
+function optionForm(){
+	$('.option-button-change').removeClass("active").addClass("active");
+	$optionSave = true;
+}
+
+function optionDownload(){
+	$('.option-button-change').removeClass("active");
+	$optionSave = false;
+}
+
+function formLeft(){
+	var $files = $('#fileUploadXML')[0].files;
+	var $maxFiles = $files.length;
+	for(var $j = 0;$j < $maxFiles;$j++){
+		var $file = $files[$j];
+		var $textRead = readFileTxt($file,"Left");
+	}
+}
+
+function formRight(){
+	var $files = $('#fileUploadTEXT')[0].files;
+	var $maxFiles = $files.length;
+	for(var $j = 0;$j < $maxFiles;$j++){
+		var $file = $files[$j];
+		var $textRead = readFileTxt($file,"Right");
+	}
+}
+
+function selectText(){
+	var $box = $('.text-result');
+	$box.focus();
+	$box[0].select();
+}
+
+function copyAll($this){
+    var $form = $($this).next();
+	$form.focus();
+	$form[0].select();
+	var ok = document.execCommand('copy');
+	if(ok){
+		alert("Đã copy text vào bộ nhớ tạm");
+	}
+}
+
+
+function ActionLeft($text,$nameFile){
+	var $old = $('.char-result-text').val();
+	var $new = $old + "\r\n" + $text;
+	if($optionSave == true){
+		$('.char-result-text').val($new);
+		console.log("Tùy chọn chèn text vào khung");
+	}
+	else{
+		var $objFile = new Object();
+		$objFile.text = $new;
+		$objFile.name = $nameFile;
+		$saveTextDownload.push($objFile);
+		console.log("Tùy chọn tải file text về máy");
+	}
+}
+
+function ActionRight($text,$nameFile){
+	//var $old = $('.char-result-char').val();
+	//var $new = $old + "\r\n" + $text;
+	if($optionSave == true){
+		$('.char-result-char').val($text);
+		console.log("Tùy chọn chèn text vào khung");
+	}
+	else{
+		$saveTextReplace = $text;
+		$('.char-result-char').val($text);
+		console.log("Tùy chọn tải file text về máy");
+	}
+}
+
+function readFileTxt($File,$action) {
+	var $nameFile = $File.name;
+    var reader = new FileReader();
+    reader.onload = function(){
+      var text = reader.result;
+	  if($action == "Left"){
+		  ActionLeft(text,$nameFile)
+	  }
+	  else{
+		  ActionRight(text,$nameFile)
+	  }
+    };
+    reader.readAsText($File);
+};
+
+function eraseForm(){
+	$('textarea.char-result-text, textarea.char-result-char').val("");
 }

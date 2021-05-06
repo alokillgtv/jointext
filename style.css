@@ -1,6 +1,6 @@
 :not(:root):-webkit-full-screen{object-fit: none!important;}
 /* width */
-::-webkit-scrollbar {width: 3px;}
+::-webkit-scrollbar {width: 8px;}
 /* Track */
 ::-webkit-scrollbar-track {background: #f1f1f1; }
 /* Handle */
@@ -172,7 +172,7 @@ li.item-file,.Item-child {
     cursor: pointer;
 }
 
-li.item-file:before {content:"â–¼";font-size: 11px;vertical-align: middle;}
+li.item-file:before {content:"Ã¢â€“Â¼";font-size: 11px;vertical-align: middle;}
 label.title-small.limit-line{display:none}
 .limit-line[style*="inline"] {
     display: block!important;
@@ -194,7 +194,7 @@ li.Item-child {
     width: 300px;
 }
 
-li.Item-child:before {content: "â–º";font-size: 11px;padding-right: 5px;}
+li.Item-child:before {content: "Ã¢â€“Âº";font-size: 11px;padding-right: 5px;}
 
 .loading-run{
 	z-index:-1;
@@ -245,7 +245,7 @@ li.item-file {
     cursor: pointer!important;
 }
 
-li.item-file.active:before {    content: "â–º";}
+li.item-file.active:before {    content: "Ã¢â€“Âº";}
 small.copyright a {
     color: white;
     text-shadow: 1px 1px 1px mediumblue,1px 1px 1px mediumblue;
@@ -557,9 +557,9 @@ ul.type-tool {
 
 ul.type-tool li {
     display: inline-block;
-    margin-right: 34px;
+    margin-right: 49px;
     padding: 10px;
-    font-size: 40px;
+    font-size: 30px;
     background: darkgray;
     cursor: pointer;
 }
@@ -602,11 +602,11 @@ ul.type-tool li:hover {
     background: beige;
 }
 textarea.char-result-text,textarea.char-result-char {
-    width: 45%;
+    width: 100%;
     margin-right: 15px;
-    height: 537px;
+    height: 500px;
     margin-left: 15px;
-	transition: all 0.5s;
+    transition: all 0.5s;
 }
 
 .page-content.page-splitchar .input-page {
@@ -623,9 +623,9 @@ textarea.char-result-text,textarea.char-result-char {
 
 .tool-split-char input {
     padding: 10px;
-    width: 85%;
-    display: block;
-    margin: 5px;
+    width: 60%;
+    display: inline-block;
+    margin: 10px auto;
 }
 
 .tool-split-char {
@@ -633,7 +633,7 @@ textarea.char-result-text,textarea.char-result-char {
 }
 
 .tool-split-char button {
-    margin: 5px 20px;
+    margin: 5px 5px;
     padding: 10px;
     cursor: pointer;
     border: 0;
@@ -660,4 +660,108 @@ button.submit-replace {
 
 .tool-split-char button:hover {
     background: black;
+	color:white
+}
+
+.wrap-btn-upload-char input {
+    opacity: 0;
+    padding: 0;
+    position: absolute;
+    top: 0px;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    cursor: pointer;
+}
+
+.wrap-btn-upload-char {
+    display: inline-block;
+    width: 150px;
+    margin: 5px 5px;
+    padding: 10px;
+    cursor: pointer;
+    border: 0;
+    color: white;
+    font-weight: bold;
+    background: blueviolet;
+    cursor: pointer;
+    position: relative;
+}
+
+.wrap-btn-upload-char.formright {
+    background: cadetblue;
+}
+
+.wrap-btn-upload-char:hover {
+    background: black;
+}
+.wrap-btn-text-input {text-align: left;}
+
+.wrap-btn-text-input label {
+    width: 210px;
+    display: inline-block;
+    padding-left: 20px;
+    font-weight: bold;
+}
+
+button.submit-erase {
+    background: darkblue;
+}
+
+.wrap-area-form {
+    width: 45%;
+    margin-right: 15px;
+    height: 500px;
+    margin-left: 15px;
+    transition: all 0.5s;
+    display: inline-block;
+    position: relative;
+}
+
+.copyform {
+    position: absolute;
+    right: 0;
+    top: 10px;
+    background: deeppink;
+    cursor: pointer;
+    border: none;
+    padding: 5px;
+    color: white;
+}
+
+.copyform:hover {
+    background: black;
+    opacity: 1;
+}
+
+.option-button-change {
+  display: inline-block;
+}
+.option-button-change button {
+  margin: 5px 0;
+  background: #ccc;
+  color:black;
+}
+
+.active .option-form{
+	background:lightcoral;
+	color:white
+}
+
+.option-button-change .option-download{
+	background:lightcoral;
+	color:white;
+}
+
+
+.active .option-download{
+	background: #ccc;
+}
+
+.copyform.daocumtu {
+    right: 80px;
+    background: blue;
+}
+.copyform.daocumtu.active {
+    background: darkred;
 }
