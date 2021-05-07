@@ -538,7 +538,7 @@ function chuyendoi($cumReplace){
 			if($upCASE == false){
 				$line = $split[1]+"\t"+$split[0];
 			}
-			else{
+			if($upCASE == true){
 				$line = $split[0]+"\t"+$split[1];
 			}
 			$newReturn += $line + "\r\n";
@@ -549,7 +549,7 @@ function chuyendoi($cumReplace){
 		$('.copyform.daocumtu').removeClass("active");
 		$('.copyform.daocumtu').addClass("active");
 	}
-	else{
+	if($upCASE == true){
 		$upCASE = false
 		$('.copyform.daocumtu').removeClass("active");
 	}
